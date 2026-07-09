@@ -5,3 +5,4 @@ state/
 node_modules
 frontend/build
 .DS_Store
+code/dnscrypt_plugin
