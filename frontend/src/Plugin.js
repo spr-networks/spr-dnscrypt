@@ -132,6 +132,9 @@ export default function Plugin() {
       <ListHeader
         title="DNSCrypt Proxy"
         description="Encrypted upstream DNS (DNSCrypt / DNS-over-HTTPS) for SPR"
+        mark="dc"
+        status={ready ? 'Protected' : running ? 'Starting' : 'Stopped'}
+        statusAction={ready ? 'success' : running ? 'warning' : 'muted'}
       >
         <Button size="sm" onPress={saveAndRestart} isDisabled={busy}>
           <ButtonText>Save & Restart</ButtonText>
