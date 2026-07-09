@@ -1,0 +1,7 @@
+configs/
+state/
+.github_creds
+.spr-setup-done
+node_modules
+frontend/build
+.DS_Store

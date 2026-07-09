@@ -1,0 +1,15 @@
+{
+  "Name": "spr-dnscrypt",
+  "ComposeFilePath": "plugins/user/spr-dnscrypt/docker-compose.yml",
+  "UnixPath": "/state/plugins/spr-dnscrypt/socket",
+  "URI": "spr-dnscrypt",
+  "HasUI": true,
+  "SandboxedUI": false,
+  "InstallTokenPath": "/configs/plugins/spr-dnscrypt/api-token",
+  "NetworkCapabilities": {
+    "Interface": "spr-dnscrypt",
+    "Policies": ["wan"],
+    "Groups": []
+  },
+  "Enabled": true
+}

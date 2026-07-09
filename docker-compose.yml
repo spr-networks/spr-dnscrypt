@@ -1,0 +1,30 @@
+version: '3.4'
+
+x-labels:
+  &default-labels
+  # constant (not $CI) so digests are reproducible across CI/local
+  org.supernetworks.ci: "true"
+  org.supernetworks.version: ${RELEASE_VERSION:-latest}${RELEASE_CHANNEL:-}
+
+services:
+  spr-dnscrypt:
+    container_name: spr-dnscrypt
+    image: ghcr.io/spr-networks/spr-dnscrypt:${RELEASE_VERSION:-latest}${RELEASE_CHANNEL:-}
+    build:
+      context: "${BUILDCTX:-.}"
+      labels: *default-labels
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      dnscryptnet:
+    volumes:
+      - "${SUPERDIR}./state/plugins/spr-dnscrypt:/state/plugins/spr-dnscrypt"
+      - "${SUPERDIR}./configs/base/config.sh:/configs/base/config.sh:ro"
+      - "${SUPERDIR}./configs/plugins/spr-dnscrypt:/configs/spr-dnscrypt"
+
+# The bridge name must match NetworkCapabilities.Interface in plugin.json and
+# the Interface used for the /firewall/custom_interface rule in install.sh.
+networks:
+  dnscryptnet:
+    driver_opts:
+      com.docker.network.bridge.name: spr-dnscrypt
