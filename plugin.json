@@ -11,7 +11,7 @@
   "NetworkCapabilities": {
     "Interface": "spr-dnscrypt",
     "Policies": ["wan"],
-    "Groups": []
+    "Groups": ["dnscrypt"]
   },
   "Enabled": true
 }

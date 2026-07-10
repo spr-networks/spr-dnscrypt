@@ -154,10 +154,10 @@ tampered list is rejected.
 - **No extra capabilities.** dnscrypt-proxy is a plain UDP/TCP client+listener:
   no `NET_ADMIN`, no `NET_RAW`, no devices, no sysctls. Every service runs with
   `no-new-privileges:true`.
-- **Least-privilege policy:** the container interface gets only the `wan`
-  policy (outbound). It cannot reach LAN devices; SPR's dns service connects to
-  it, not the other way around. The plugin does not call the SPR API (no
-  `ScopedPaths`).
+- **Least-privilege policy:** the container interface gets the `wan` policy
+  (outbound) and `dnscrypt` group, with no `lan` access. SPR's dns service
+  connects to it, not the other way around. The plugin does not call the SPR
+  API (no `ScopedPaths`).
 - **Secrets: none.** The config contains no keys or passwords.
 - Host mounts are limited to the plugin's own state dir (rw), its config dir
   (rw) and `configs/base/config.sh` (ro).

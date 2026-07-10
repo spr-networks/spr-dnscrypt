@@ -51,7 +51,7 @@ API=127.0.0.1
 curl "http://${API}/firewall/custom_interface" \
 -H "Authorization: Bearer ${SPR_API_TOKEN}" \
 -X 'PUT' \
---data-raw "{\"SrcIP\":\"${CONTAINER_IP}\",\"Interface\":\"spr-dnscrypt\",\"Policies\":[\"wan\"]}"
+--data-raw "{\"SrcIP\":\"${CONTAINER_IP}\",\"Interface\":\"spr-dnscrypt\",\"Policies\":[\"wan\"],\"Groups\":[\"dnscrypt\"]}"
 
 echo ""
 echo "[+] spr-dnscrypt is up at ${CONTAINER_IP}:53 (udp+tcp)"
