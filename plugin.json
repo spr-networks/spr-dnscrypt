@@ -4,6 +4,7 @@
   "UnixPath": "/state/plugins/spr-dnscrypt/socket",
   "URI": "spr-dnscrypt",
   "HasUI": true,
+  "HasTopology": true,
   "Icon": "Key",
   "SandboxedUI": false,
   "InstallTokenPath": "/configs/plugins/spr-dnscrypt/api-token",
