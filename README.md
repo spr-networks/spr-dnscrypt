@@ -1,5 +1,7 @@
 # spr-dnscrypt
 
+<img width="850" alt="spr-dnscrypt UI preview" src="docs/screenshot.png" />
+
 Encrypted outbound DNS for [SPR](https://github.com/spr-networks/super) using
 [dnscrypt-proxy](https://github.com/DNSCrypt/dnscrypt-proxy). The plugin runs
 dnscrypt-proxy in its own container on a dedicated docker bridge and exposes a
