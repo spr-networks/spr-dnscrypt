@@ -25,8 +25,6 @@ plain UDP/53.
   fastest resolver, per-resolver RTT
 - Save + restart from the UI; the daemon is supervised and auto-restarts with
   backoff if it crashes
-- Contributes to SPR's topology view (`HasTopology`): each live upstream
-  resolver appears as a node linked to the router
 
 ## How it integrates with SPR
 
@@ -34,10 +32,6 @@ The plugin backend serves its REST API and the bundled UI over the unix socket
 `/state/plugins/spr-dnscrypt/socket`; SPR proxies `/plugins/spr-dnscrypt/...`
 to it and embeds the UI as an iframe. The dnscrypt-proxy daemon itself is only
 reachable at the container's IP on the `spr-dnscrypt` bridge.
-
-The plugin also declares `"HasTopology": true`: SPR polls `GET /topology` and
-merges the returned graph (live encrypted resolvers hanging off the router's
-root node) into its network topology view.
 
 Traffic flow: `LAN clients → SPR CoreDNS (dns service) → spr-dnscrypt
 container IP:53 → encrypted (DNSCrypt/DoH) → public resolvers`.
@@ -98,7 +92,6 @@ All endpoints are served over the plugin unix socket and proxied by SPR at
 | PUT    | `/config`    | Validate + save JSON config (applied on next restart)                        |
 | POST   | `/restart`   | Regenerate `dnscrypt-proxy.toml` from the saved config and restart the daemon |
 | GET    | `/resolvers` | Parsed public-resolvers list (name, description, protocols, DNSSEC/no-log/no-filter flags, addresses) from the vendored copy — works offline |
-| GET    | `/topology`  | Topology graph for SPR's topology view (`{"Nodes":[...],"Edges":[...]}`): a `root` anchor node plus one `resolver` node per live (probed OK) upstream, each with a `dns`-layer edge toward `root`; `ConnType` is `dnscrypt` or `doh`. Root-only when the daemon is down |
 
 ## Configuration reference
 
