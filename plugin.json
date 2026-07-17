@@ -1,6 +1,6 @@
 {
   "Name": "spr-dnscrypt",
-  "ComposeFilePath": "plugins/user/spr-dnscrypt/docker-compose.yml",
+  "ComposeFilePath": "plugins/user/spr-dnscrypt/docker-compose-krun.yml",
   "UnixPath": "/state/plugins/spr-dnscrypt/socket",
   "URI": "spr-dnscrypt",
   "HasUI": true,
@@ -8,7 +8,8 @@
   "SandboxedUI": false,
   "InstallTokenPath": "/configs/plugins/spr-dnscrypt/api-token",
   "NetworkCapabilities": {
-    "Interface": "spr-dnscrypt",
+    "Interface": "kdnscrypt0",
+    "DeviceMAC": "02:53:50:52:4b:05",
     "Policies": ["wan"],
     "Groups": ["dnscrypt"]
   },
