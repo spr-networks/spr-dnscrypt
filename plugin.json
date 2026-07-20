@@ -1,6 +1,6 @@
 {
   "Name": "spr-dnscrypt",
-  "ComposeFilePath": "plugins/user/spr-dnscrypt/docker-compose-krun.yml",
+  "Runtime": "kvm",
   "UnixPath": "/state/plugins/spr-dnscrypt/socket",
   "URI": "spr-dnscrypt",
   "HasUI": true,
