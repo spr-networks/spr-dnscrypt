@@ -8,7 +8,7 @@
   "SandboxedUI": false,
   "InstallTokenPath": "/configs/plugins/spr-dnscrypt/api-token",
   "NetworkCapabilities": {
-    "Interface": "kdnscrypt0",
+    "Interface": "spr-dnscrypt",
     "DeviceMAC": "02:53:50:52:4b:05",
     "Policies": ["wan"],
     "Groups": ["dnscrypt"]
