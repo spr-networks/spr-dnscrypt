@@ -189,7 +189,7 @@ func (d *Daemon) startLocked() error {
 	return nil
 }
 
-var reReady = regexp.MustCompile(`dnscrypt-proxy is ready - live servers: (\d+)`)
+var reReady = regexp.MustCompile(`live servers: (\d+)`)
 var reServerOK = regexp.MustCompile(`\[([A-Za-z0-9._+-]+)\] OK \(([^)]+)\)(?:.*rtt: (\d+)ms)?`)
 var reFastest = regexp.MustCompile(`Server with the lowest initial latency: ([A-Za-z0-9._+-]+)`)
 var reError = regexp.MustCompile(`\[(ERROR|CRITICAL|FATAL)\] (.*)`)
@@ -200,10 +200,16 @@ func (d *Daemon) parseLine(gen int, line string) {
 	if gen != d.gen {
 		return
 	}
-	if m := reReady.FindStringSubmatch(line); m != nil {
-		d.ready = true
-		d.liveServers, _ = strconv.Atoi(m[1])
-		return
+	readyMatch := reReady.FindStringSubmatch(line)
+	if readyMatch != nil {
+		d.liveServers, _ = strconv.Atoi(readyMatch[1])
+		d.ready = d.liveServers > 0
+		// Bootstrap failures are often transient while the resolver pool is
+		// probed. A live-server summary is authoritative evidence that the
+		// daemon recovered, so do not keep presenting the earlier error.
+		if d.ready {
+			d.lastError = ""
+		}
 	}
 	if m := reServerOK.FindStringSubmatch(line); m != nil {
 		rtt := -1
@@ -215,6 +221,9 @@ func (d *Daemon) parseLine(gen int, line string) {
 	}
 	if m := reFastest.FindStringSubmatch(line); m != nil {
 		d.fastest = m[1]
+		return
+	}
+	if readyMatch != nil {
 		return
 	}
 	if m := reError.FindStringSubmatch(line); m != nil {

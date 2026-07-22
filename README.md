@@ -36,9 +36,10 @@ reachable at the container's IP on the `spr-dnscrypt` bridge.
 Traffic flow: `LAN clients → SPR CoreDNS (dns service) → spr-dnscrypt
 container IP:53 → encrypted (DNSCrypt/DoH) → public resolvers`.
 
-The container has the `wan` policy only (outbound internet). SPR's dns service
-connects **to** the container across the docker bridges; the container never
-initiates connections to the LAN or the SPR API.
+The container has the `wan` and `dns` policies so it can reach public resolvers
+and perform bootstrap lookups. SPR's dns service connects **to** the container
+across the docker bridges; the container never initiates connections to the
+LAN or the SPR API.
 
 ### Pointing SPR's DNS at the plugin (required final step)
 
@@ -77,7 +78,8 @@ cd spr-dnscrypt
 
 `install.sh` prompts for the SPR directory and an API token (generate one under
 Auth → Tokens), writes the default plugin config, builds and starts the
-container, registers the `spr-dnscrypt` custom interface with the `wan` policy,
+container, registers the `spr-dnscrypt` custom interface with the `wan` and
+`dns` policies,
 and prints the container IP to configure as SPR's DNS upstream.
 
 ## API
@@ -147,10 +149,10 @@ tampered list is rejected.
 - **No extra capabilities.** dnscrypt-proxy is a plain UDP/TCP client+listener:
   no `NET_ADMIN`, no `NET_RAW`, no devices, no sysctls. Every service runs with
   `no-new-privileges:true`.
-- **Least-privilege policy:** the container interface gets the `wan` policy
-  (outbound) and `dnscrypt` group, with no `lan` access. SPR's dns service
-  connects to it, not the other way around. The plugin does not call the SPR
-  API (no `ScopedPaths`).
+- **Least-privilege policy:** the container interface gets the `wan` and `dns`
+  policies and `dnscrypt` group, with no `lan` access. The DNS policy permits
+  bootstrap lookups. SPR's dns service connects to it, not the other way
+  around. The plugin does not call the SPR API (no `ScopedPaths`).
 - **Secrets: none.** The config contains no keys or passwords.
 - Host mounts are limited to the plugin's own state dir (rw), its config dir
   (rw) and `configs/base/config.sh` (ro).
