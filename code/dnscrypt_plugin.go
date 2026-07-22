@@ -12,7 +12,7 @@ import (
 	"syscall"
 )
 
-var UNIX_PLUGIN_LISTENER = TEST_PREFIX + "/state/plugins/spr-dnscrypt/socket"
+var UNIX_PLUGIN_LISTENER = TEST_PREFIX + "/run/spr-krun-plugin/spr-dnscrypt.sock"
 
 var gDaemon = NewDaemon()
 

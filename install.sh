@@ -40,10 +40,25 @@ cat > "$SUPERDIR/configs/plugins/spr-dnscrypt/config.json" <<'EOF'
 EOF
 fi
 
-docker compose build
-docker compose up -d
+KRUN_MAC="02:53:50:52:4b:05"
+PLUGIN_INTERFACE="spr-dnscrypt"
+curl --fail-with-body --silent --show-error "http://127.0.0.1/device?identity=${KRUN_MAC}" \
+  -H "Authorization: Bearer ${SPR_API_TOKEN}" -H "Content-Type: application/json" \
+  -X PUT --data-raw "{\"MAC\":\"${KRUN_MAC}\",\"Name\":\"spr-dnscrypt\",\"Policies\":[\"wan\"],\"Groups\":[\"dnscrypt\"]}" >/dev/null
+if ! sudo nft get element inet filter dhcp_access "{ \"${PLUGIN_INTERFACE}\" . ${KRUN_MAC} }" >/dev/null 2>&1; then
+  sudo nft add element inet filter dhcp_access "{ \"${PLUGIN_INTERFACE}\" . ${KRUN_MAC} : accept }"
+fi
 
-CONTAINER_IP=$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "spr-dnscrypt")
+docker compose -f docker-compose-kvm.yml build
+docker compose -f docker-compose-kvm.yml up -d
+
+CONTAINER_IP=
+for _ in $(seq 1 30); do
+  CONTAINER_IP="$(jq -r --arg mac "$KRUN_MAC" '.[$mac].RecentIP // empty' "$SUPERDIR/state/public/devices-public.json")"
+  [ -n "$CONTAINER_IP" ] && break
+  sleep 1
+done
+[ -n "$CONTAINER_IP" ] || { echo "spr-dnscrypt did not obtain an SPR DHCP lease" >&2; exit 1; }
 API=127.0.0.1
 
 # Grant the container outbound (wan) access only. SPR's dns service connects
@@ -51,7 +66,7 @@ API=127.0.0.1
 curl "http://${API}/firewall/custom_interface" \
 -H "Authorization: Bearer ${SPR_API_TOKEN}" \
 -X 'PUT' \
---data-raw "{\"SrcIP\":\"${CONTAINER_IP}\",\"Interface\":\"spr-dnscrypt\",\"Policies\":[\"wan\"],\"Groups\":[\"dnscrypt\"]}"
+--data-raw "{\"SrcIP\":\"${CONTAINER_IP}\",\"Interface\":\"${PLUGIN_INTERFACE}\",\"Policies\":[\"wan\"],\"Groups\":[\"dnscrypt\"]}"
 
 echo ""
 echo "[+] spr-dnscrypt is up at ${CONTAINER_IP}:53 (udp+tcp)"
