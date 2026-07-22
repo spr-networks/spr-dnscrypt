@@ -6,7 +6,6 @@
   "HasUI": true,
   "Icon": "Key",
   "SandboxedUI": false,
-  "InstallTokenPath": "/configs/plugins/spr-dnscrypt/api-token",
   "NetworkCapabilities": {
     "Interface": "spr-dnscrypt",
     "DeviceMAC": "02:53:50:52:4b:05",
