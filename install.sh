@@ -44,7 +44,7 @@ KRUN_MAC="02:53:50:52:4b:05"
 PLUGIN_INTERFACE="spr-dnscrypt"
 curl --fail-with-body --silent --show-error "http://127.0.0.1/device?identity=${KRUN_MAC}" \
   -H "Authorization: Bearer ${SPR_API_TOKEN}" -H "Content-Type: application/json" \
-  -X PUT --data-raw "{\"MAC\":\"${KRUN_MAC}\",\"Name\":\"spr-dnscrypt\",\"Policies\":[\"wan\"],\"Groups\":[\"dnscrypt\"]}" >/dev/null
+  -X PUT --data-raw "{\"MAC\":\"${KRUN_MAC}\",\"Name\":\"spr-dnscrypt\",\"Policies\":[\"wan\",\"dns\"],\"Groups\":[\"dnscrypt\"]}" >/dev/null
 if ! sudo nft get element inet filter dhcp_access "{ \"${PLUGIN_INTERFACE}\" . ${KRUN_MAC} }" >/dev/null 2>&1; then
   sudo nft add element inet filter dhcp_access "{ \"${PLUGIN_INTERFACE}\" . ${KRUN_MAC} : accept }"
 fi
@@ -61,12 +61,11 @@ done
 [ -n "$CONTAINER_IP" ] || { echo "spr-dnscrypt did not obtain an SPR DHCP lease" >&2; exit 1; }
 API=127.0.0.1
 
-# Grant the container outbound (wan) access only. SPR's dns service connects
-# TO the container; the container never needs to reach LAN devices or the API.
+# Grant outbound access and register the VM with SPR's DNS policy.
 curl "http://${API}/firewall/custom_interface" \
 -H "Authorization: Bearer ${SPR_API_TOKEN}" \
 -X 'PUT' \
---data-raw "{\"SrcIP\":\"${CONTAINER_IP}\",\"Interface\":\"${PLUGIN_INTERFACE}\",\"Policies\":[\"wan\"],\"Groups\":[\"dnscrypt\"]}"
+--data-raw "{\"SrcIP\":\"${CONTAINER_IP}\",\"Interface\":\"${PLUGIN_INTERFACE}\",\"Policies\":[\"wan\",\"dns\"],\"Groups\":[\"dnscrypt\"]}"
 
 echo ""
 echo "[+] spr-dnscrypt is up at ${CONTAINER_IP}:53 (udp+tcp)"

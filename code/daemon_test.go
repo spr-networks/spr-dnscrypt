@@ -51,3 +51,24 @@ func TestParseLine(t *testing.T) {
 		t.Error("stale generation line was applied")
 	}
 }
+
+func TestParseCurrentReadyLineClearsBootstrapError(t *testing.T) {
+	d := NewDaemon()
+
+	d.parseLine(0, "[2026-07-22 00:18:01] [ERROR] Unable to resolve [dns.nextdns.io]")
+	d.parseLine(0, "[2026-07-22 00:19:32] [NOTICE] Server with the lowest initial latency: dnscry.pt-philadelphia-ipv4 (rtt: 66ms), live servers: 5")
+
+	st := d.Status()
+	if !st.Ready {
+		t.Error("expected ready after live-server summary")
+	}
+	if st.LiveServers != 5 {
+		t.Errorf("live servers = %d, want 5", st.LiveServers)
+	}
+	if st.FastestServer != "dnscry.pt-philadelphia-ipv4" {
+		t.Errorf("fastest = %q", st.FastestServer)
+	}
+	if st.LastError != "" {
+		t.Errorf("last error = %q, want cleared", st.LastError)
+	}
+}

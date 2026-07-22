@@ -9,7 +9,7 @@
   "NetworkCapabilities": {
     "Interface": "spr-dnscrypt",
     "DeviceMAC": "02:53:50:52:4b:05",
-    "Policies": ["wan"],
+    "Policies": ["wan", "dns"],
     "Groups": ["dnscrypt"]
   },
   "Enabled": true
