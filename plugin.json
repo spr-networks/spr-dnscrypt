@@ -1,7 +1,7 @@
 {
   "Name": "spr-dnscrypt",
   "Runtime": "kvm",
-  "UnixPath": "/state/plugins/spr-dnscrypt/socket",
+  "UnixPath": "/state/plugins/spr-dnscrypt/socket.sock",
   "URI": "spr-dnscrypt",
   "HasUI": true,
   "Icon": "Key",

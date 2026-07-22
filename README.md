@@ -29,7 +29,7 @@ plain UDP/53.
 ## How it integrates with SPR
 
 The plugin backend serves its REST API and the bundled UI over the unix socket
-`/state/plugins/spr-dnscrypt/socket`; SPR proxies `/plugins/spr-dnscrypt/...`
+`/state/plugins/spr-dnscrypt/socket.sock`; SPR proxies `/plugins/spr-dnscrypt/...`
 to it and embeds the UI as an iframe. The dnscrypt-proxy daemon itself is only
 reachable at the container's IP on the `spr-dnscrypt` bridge.
 
