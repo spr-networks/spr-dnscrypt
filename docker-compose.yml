@@ -9,7 +9,7 @@ x-labels:
 services:
   spr-dnscrypt:
     container_name: spr-dnscrypt
-    image: ghcr.io/spr-networks/spr-dnscrypt:${RELEASE_VERSION:-latest}${RELEASE_CHANNEL:-}
+    image: ghcr.io/spr-networks/spr-dnscrypt:latest
     build:
       context: "${BUILDCTX:-.}"
       labels: *default-labels
